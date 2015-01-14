@@ -6,7 +6,7 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/12 12:23:46 by tgauvrit          #+#    #+#             */
-/*   Updated: 2015/01/13 14:18:23 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2015/01/14 18:47:56 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ static void		check_if_alias(t_conversion *conv)
 	{
 		conv->modif = L;
 		conv->flags->pound = 1;
-		conv->type = 'x';
 	}
 }
 
@@ -34,7 +33,7 @@ static intmax_t	get_conv_signed(t_conversion *conv, va_list ap)
 	if (conv->modif == HH)
 		return ((char)va_arg(ap, int));
 	if (conv->modif == H)
-		return (va_arg(ap, int));
+		return ((short)va_arg(ap, int));
 	if (conv->modif == L)
 		return (va_arg(ap, long));
 	if (conv->modif == LL)
@@ -51,7 +50,7 @@ static intmax_t	get_conv_unsigned(t_conversion *conv, va_list ap)
 	if (conv->modif == HH)
 		return ((unsigned char)va_arg(ap, unsigned int));
 	if (conv->modif == H)
-		return (va_arg(ap, unsigned int));
+		return ((unsigned short)va_arg(ap, unsigned int));
 	if (conv->modif == L)
 		return (va_arg(ap, unsigned long));
 	if (conv->modif == LL)
@@ -68,8 +67,6 @@ void			print_num_conv(t_conversion *conv, va_list ap)
 	intmax_t	num;
 
 	check_if_alias(conv);
-	if (conv->flags->plus)
-		conv->sign = '+';
 	if (conv->type == 'd')
 	{
 		num = get_conv_signed(conv, ap);
@@ -78,15 +75,18 @@ void			print_num_conv(t_conversion *conv, va_list ap)
 			conv->sign = '-';
 			num *= -1;
 		}
-		conv->type = 'u';
+		else if (conv->flags->plus)
+			conv->sign = '+';
+		else if (conv->flags->space)
+			conv->sign = ' ';
 	}
 	else
 		num = get_conv_unsigned(conv, ap);
-	if (conv->type == 'u')
+	if (ft_strchr("du", conv->type))
 		print_u(conv, (uintmax_t)num);
 	else if (conv->type == 'o')
 		print_o(conv, (uintmax_t)num);
-	else if (conv->type == 'x')
+	else if (ft_strchr("xp", conv->type))
 		print_x(conv, (uintmax_t)num);
 	else if (conv->type == 'X')
 		print_x_caps(conv, (uintmax_t)num);
@@ -127,7 +127,7 @@ char			*print_conversion(char *str, va_list ap)
 	str = parse_conversion(str, conv);
 	if (ft_strchr("idDoOuUxXp", conv->type))
 		print_num_conv(conv, ap);
-	else// if (ft_strchr("cCsS%", conv->type))
+	else
 		print_str_conv(conv, ap);
 	del_conversion(conv);
 	return (str);

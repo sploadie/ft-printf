@@ -6,7 +6,7 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/13 13:48:44 by tgauvrit          #+#    #+#             */
-/*   Updated: 2015/01/13 15:21:18 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2015/01/14 18:09:59 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,19 +41,52 @@ static void		wint_to_str(wint_t wint)
 	}
 }
 
+static int		count_wchars(t_conversion *conv, wchar_t *wstr, int *size)
+{
+	int		i;
+	int		add;
+	int		total;
+
+	i = 0;
+	add = 0;
+	total = 0;
+	while (i < *size)
+	{
+		if (wstr[i] <= 0x7F)
+			add = 1;
+		else if (wstr[i] <= 0x7FF)
+			add = 2;
+		else if (wstr[i] <= 0xFFFF)
+			add = 3;
+		else if (wstr[i] <= 0x10FFFF)
+			add = 4;
+		if (conv->prec_set && conv->type == 's' && (total + add) > conv->precision)
+			break;
+		total += add;
+		i++;
+	}
+	*size = i;
+	return (total);
+}
+
 static void		print_wchars(t_conversion *conv, wchar_t *wstr, int size)
 {
 	int		i;
+	int		total;
 
+	total = count_wchars(conv, wstr, &size);
+	if (!(conv->flags->minus) && conv->flags->zero)
+		print_spacing(total, conv->min_width, '0');
+	else if (!(conv->flags->minus))
+		print_spacing(total, conv->min_width, ' ');
 	i = 0;
 	while (i < size)
 	{
-		if (wstr[i] > 0x10FFFF)
-			printf_error("Invalid wide char. (print_wstr)");
 		wint_to_str(wstr[i]);
 		i++;
 	}
-	(void)conv;
+	if (conv->flags->minus)
+		print_spacing(total, conv->min_width, ' ');
 }
 
 void			print_wchar(t_conversion *conv, wint_t wint)

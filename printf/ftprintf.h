@@ -6,7 +6,7 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/03 13:02:07 by tgauvrit          #+#    #+#             */
-/*   Updated: 2015/01/13 14:11:12 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2015/01/14 18:48:39 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,6 @@
 # include <limits.h>
 # include <wchar.h>
 # include "libft.h"
-
-// typedef struct			s_input
-// {
-// 	char				*str;
-// 	va_list				ap;
-// 	va_list				origin;
-// }						t_input;
 
 typedef struct			s_flags
 {
@@ -54,21 +47,14 @@ typedef struct			s_conversion
 	char				sep;
 	int					min_width;
 	int					precision;
+	int					prec_set;
 	modifier			modif;
 	char				type;
-	// struct s_conversion	*next;
 	char				sign;
 }						t_conversion;
 
-// typedef struct		s_structure
-// {
-// 	int				variable;
-// }					t_structure;
-
 int						ft_printf(const char *format, ...);
 void					printf_error(char *str);
-
-// t_input					*new_input(char *str, va_list ap);
 
 t_conversion			*new_conversion(char *str);
 char					*print_conversion(char *str, va_list ap);
@@ -89,5 +75,6 @@ uintmax_t				digitc(uintmax_t n);
 int						tally_get(int size, int add);
 void					tally_print(void *mem, int size);
 void					tally_str(char *str);
+void					print_spacing(int len, int min, char c);
 
 #endif

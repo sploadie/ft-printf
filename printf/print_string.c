@@ -6,7 +6,7 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/12 17:14:20 by tgauvrit          #+#    #+#             */
-/*   Updated: 2015/01/13 13:50:58 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2015/01/14 18:10:16 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,19 @@
 
 static void		print_chars(t_conversion *conv, char *str, int size)
 {
+	if (conv->prec_set && conv->type == 's')
+		size = (size < conv->precision ? size : conv->precision);
+	if (conv->flags->minus)
+	{
+		tally_print(str, size);
+		print_spacing(size, conv->min_width, ' ');
+		return ;
+	}
+	if (conv->flags->zero)
+		print_spacing(size, conv->min_width, '0');
+	else
+		print_spacing(size, conv->min_width, ' ');
 	tally_print(str, size);
-	(void)conv;
 }
 
 void			print_char(t_conversion *conv, char c)

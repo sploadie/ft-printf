@@ -6,7 +6,7 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/12 12:34:09 by tgauvrit          #+#    #+#             */
-/*   Updated: 2015/01/13 09:03:22 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2015/01/14 16:39:10 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,10 +39,6 @@ static char	*parse_flags(char *str, t_flags *flags)
 
 static char	*parse_min_width(char *str, t_conversion *conv)
 {
-	if (*str != '.')
-		return (str);
-	else
-		str++;
 	conv->min_width = ft_atoi(str);
 	while (ft_isdigit(*str))
 		str++;
@@ -53,7 +49,11 @@ static char	*parse_min_width(char *str, t_conversion *conv)
 
 static char	*parse_precision(char *str, t_conversion *conv)
 {
+	if (*str != '.')
+		return (str);
+	str++;
 	conv->precision = ft_atoi(str);
+	conv->prec_set = 1;
 	while (ft_isdigit(*str))
 		str++;
 	if (!str)
