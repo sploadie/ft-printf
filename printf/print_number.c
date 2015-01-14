@@ -6,19 +6,13 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/12 14:55:28 by tgauvrit          #+#    #+#             */
-/*   Updated: 2015/01/14 18:35:51 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2015/01/14 19:27:52 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ftprintf.h"
 
-static void	print_left(t_conversion *conv, char *str)
-{
-	tally_str(str);
-	print_spacing(ft_strlen(str), conv->min_width, ' ');
-}
-
-void	print_u(t_conversion *conv, uintmax_t num)
+void		print_u(t_conversion *conv, uintmax_t num)
 {
 	char	str[100];
 	int		i;
@@ -40,16 +34,10 @@ void	print_u(t_conversion *conv, uintmax_t num)
 	}
 	else if (conv->sign)
 		str[--i] = conv->sign;
-	if (conv->flags->minus)
-		return (print_left(conv, str + i));
-	if (conv->flags->zero)
-		print_spacing(ft_strlen(str + i), conv->min_width, '0');
-	else
-		print_spacing(ft_strlen(str + i), conv->min_width, ' ');
-	tally_str(str + i);
+	print_num_spaced(conv, str + i);
 }
 
-void	print_o(t_conversion *conv, uintmax_t num)
+void		print_o(t_conversion *conv, uintmax_t num)
 {
 	char	str[100];
 	int		i;
@@ -64,16 +52,10 @@ void	print_o(t_conversion *conv, uintmax_t num)
 		str[--i] = '0';
 	while (conv->precision > 99 - i)
 		str[--i] = '0';
-	if (conv->flags->minus)
-		return (print_left(conv, str + i));
-	if (conv->flags->zero)
-		print_spacing(ft_strlen(str + i), conv->min_width, '0');
-	else
-		print_spacing(ft_strlen(str + i), conv->min_width, ' ');
-	tally_str(str + i);
+	print_num_spaced(conv, str + i);
 }
 
-void	print_x(t_conversion *conv, uintmax_t num)
+void		print_x(t_conversion *conv, uintmax_t num)
 {
 	char	str[100];
 	int		i;
@@ -81,31 +63,26 @@ void	print_x(t_conversion *conv, uintmax_t num)
 	i = 99;
 	str[i] = '\0';
 	if (num > 0 || !conv->prec_set)
-		str[--i] = (((num % 16) <= 9) ? ('0' + (num % 16)) : ('0' + (num % 16) + 39));
+		str[--i] = (((num % 16) <= 9) ? ('0' + (num % 16))
+			: ('0' + (num % 16) + 39));
 	while ((num /= 16) > 0)
-		str[--i] = (((num % 16) <= 9) ? ('0' + (num % 16)) : ('0' + (num % 16) + 39));
+		str[--i] = (((num % 16) <= 9) ? ('0' + (num % 16))
+			: ('0' + (num % 16) + 39));
 	while (conv->precision > 99 - i)
 		str[--i] = '0';
-	if (conv->flags->zero && ((conv->flags->pound && i < 99 && str[98] != '0') || conv->type == 'p'))
-	{
-		tally_print("0x", 2);
+	if (conv->flags->zero && ((conv->flags->pound && i < 99 && str[98] != '0')
+		|| conv->type == 'p') && tally_print("0x", 2))
 		conv->min_width -= 2;
-	}
-	else if ((conv->flags->pound && i < 99 && str[98] != '0') || conv->type == 'p')
+	else if ((conv->flags->pound && i < 99 && str[98] != '0')
+		|| conv->type == 'p')
 	{
 		str[--i] = 'x';
 		str[--i] = '0';
 	}
-	if (conv->flags->minus)
-		return (print_left(conv, str + i));
-	if (conv->flags->zero)
-		print_spacing(ft_strlen(str + i), conv->min_width, '0');
-	else
-		print_spacing(ft_strlen(str + i), conv->min_width, ' ');
-	tally_str(str + i);
+	print_num_spaced(conv, str + i);
 }
 
-void	print_x_caps(t_conversion *conv, uintmax_t num)
+void		print_x_caps(t_conversion *conv, uintmax_t num)
 {
 	char	str[100];
 	int		i;
@@ -113,9 +90,11 @@ void	print_x_caps(t_conversion *conv, uintmax_t num)
 	i = 99;
 	str[i] = '\0';
 	if (num > 0 || !conv->prec_set)
-		str[--i] = (((num % 16) <= 9) ? ('0' + (num % 16)) : ('0' + (num % 16) + 7));
+		str[--i] = (((num % 16) <= 9) ? ('0' + (num % 16))
+			: ('0' + (num % 16) + 7));
 	while ((num /= 16) > 0)
-		str[--i] = (((num % 16) <= 9) ? ('0' + (num % 16)) : ('0' + (num % 16) + 7));
+		str[--i] = (((num % 16) <= 9) ? ('0' + (num % 16))
+			: ('0' + (num % 16) + 7));
 	while (conv->precision > 99 - i)
 		str[--i] = '0';
 	if (conv->flags->zero && conv->flags->pound && str[i] != '0')
@@ -128,11 +107,5 @@ void	print_x_caps(t_conversion *conv, uintmax_t num)
 		str[--i] = 'X';
 		str[--i] = '0';
 	}
-	if (conv->flags->minus)
-		return (print_left(conv, str + i));
-	if (conv->flags->zero)
-		print_spacing(ft_strlen(str + i), conv->min_width, '0');
-	else
-		print_spacing(ft_strlen(str + i), conv->min_width, ' ');
-	tally_str(str + i);
+	print_num_spaced(conv, str + i);
 }

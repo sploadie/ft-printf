@@ -6,7 +6,7 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/12 12:34:09 by tgauvrit          #+#    #+#             */
-/*   Updated: 2015/01/14 16:39:10 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2015/01/14 19:01:31 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ static char	*parse_flags(char *str, t_flags *flags)
 		else if (*str == ' ')
 			flags->space = 1;
 		else if (*str == '\0')
-			break;
+			break ;
 		else
 			printf_error("Parse Flags fucked up.");
 		str++;

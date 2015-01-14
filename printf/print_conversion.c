@@ -6,7 +6,7 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/12 12:23:46 by tgauvrit          #+#    #+#             */
-/*   Updated: 2015/01/14 18:47:56 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2015/01/14 19:37:00 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,41 +28,7 @@ static void		check_if_alias(t_conversion *conv)
 	}
 }
 
-static intmax_t	get_conv_signed(t_conversion *conv, va_list ap)
-{
-	if (conv->modif == HH)
-		return ((char)va_arg(ap, int));
-	if (conv->modif == H)
-		return ((short)va_arg(ap, int));
-	if (conv->modif == L)
-		return (va_arg(ap, long));
-	if (conv->modif == LL)
-		return (va_arg(ap, long long));
-	if (conv->modif == J)
-		return (va_arg(ap, intmax_t));
-	if (conv->modif == Z)
-		return (va_arg(ap, ssize_t));
-	return (va_arg(ap, int));
-}
-
-static intmax_t	get_conv_unsigned(t_conversion *conv, va_list ap)
-{
-	if (conv->modif == HH)
-		return ((unsigned char)va_arg(ap, unsigned int));
-	if (conv->modif == H)
-		return ((unsigned short)va_arg(ap, unsigned int));
-	if (conv->modif == L)
-		return (va_arg(ap, unsigned long));
-	if (conv->modif == LL)
-		return (va_arg(ap, unsigned long long));
-	if (conv->modif == J)
-		return (va_arg(ap, uintmax_t));
-	if (conv->modif == Z)
-		return (va_arg(ap, size_t));
-	return (va_arg(ap, unsigned int));
-}
-
-void			print_num_conv(t_conversion *conv, va_list ap)
+static void		print_num_conv(t_conversion *conv, va_list ap)
 {
 	intmax_t	num;
 
@@ -70,11 +36,8 @@ void			print_num_conv(t_conversion *conv, va_list ap)
 	if (conv->type == 'd')
 	{
 		num = get_conv_signed(conv, ap);
-		if (num < 0)
-		{
+		if (num < 0 && (num *= -1))
 			conv->sign = '-';
-			num *= -1;
-		}
 		else if (conv->flags->plus)
 			conv->sign = '+';
 		else if (conv->flags->space)
@@ -92,7 +55,7 @@ void			print_num_conv(t_conversion *conv, va_list ap)
 		print_x_caps(conv, (uintmax_t)num);
 }
 
-void			print_str_conv(t_conversion *conv, va_list ap)
+static void		print_str_conv(t_conversion *conv, va_list ap)
 {
 	if (ft_strchr("CS", conv->type))
 	{

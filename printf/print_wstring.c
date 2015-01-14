@@ -6,40 +6,11 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/13 13:48:44 by tgauvrit          #+#    #+#             */
-/*   Updated: 2015/01/14 18:09:59 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2015/01/14 19:36:31 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ftprintf.h"
-
-static void		wint_to_str(wint_t wint)
-{
-	char 		str[4];
-
-	if (wint <= 0x7F)
-		tally_print(&wint, 1);
-	else if (wint <= 0x7FF)
-	{
-		str[0] = (((wint & 0x07c0) >> 6) + 0xc0);
-		str[1] = ((wint & 0x003F) + 0x80);
-		tally_print(str, 2);
-	}
-	else if (wint <= 0xFFFF)
-	{
-		str[0] = (((wint & 0xF000) >> 12) + 0xE0);
-		str[1] = (((wint & 0x0Fc0) >> 6) + 0x80);
-		str[2] = ((wint & 0x003F) + 0x80);
-		tally_print(str, 3);
-	}
-	else if (wint <= 0x10FFFF)
-	{
-		str[0] = (((wint & 0x1c0000) >> 18) + 0xF0);
-		str[1] = (((wint & 0x03F000) >> 12) + 0x80);
-		str[2] = (((wint & 0x0Fc0) >> 6) + 0x80);
-		str[3] = ((wint & 0x003F) + 0x80); 
-		tally_print(str, 4);
-	}
-}
 
 static int		count_wchars(t_conversion *conv, wchar_t *wstr, int *size)
 {
@@ -60,8 +31,9 @@ static int		count_wchars(t_conversion *conv, wchar_t *wstr, int *size)
 			add = 3;
 		else if (wstr[i] <= 0x10FFFF)
 			add = 4;
-		if (conv->prec_set && conv->type == 's' && (total + add) > conv->precision)
-			break;
+		if (conv->prec_set && conv->type == 's'
+			&& (total + add) > conv->precision)
+			break ;
 		total += add;
 		i++;
 	}
@@ -82,7 +54,7 @@ static void		print_wchars(t_conversion *conv, wchar_t *wstr, int size)
 	i = 0;
 	while (i < size)
 	{
-		wint_to_str(wstr[i]);
+		print_wint(wstr[i]);
 		i++;
 	}
 	if (conv->flags->minus)

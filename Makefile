@@ -6,7 +6,7 @@
 #    By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/09/09 10:54:05 by tgauvrit          #+#    #+#              #
-#    Updated: 2015/01/14 09:30:11 by tgauvrit         ###   ########.fr        #
+#    Updated: 2015/01/14 19:35:04 by tgauvrit         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -105,7 +105,10 @@ PRINTF_CMPLD =	ft_printf.o \
 				print_wstring.o \
 				digitc.o \
 				tally_print.o \
-				print_spacing.o
+				print_spacing.o \
+				print_num_spaced.o \
+				get_conv_num.o \
+				print_wint.o
 
 COMPILED =		$(FT_COMPILED) $(PRINTF_CMPLD)
 

@@ -6,7 +6,7 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/12 18:13:54 by tgauvrit          #+#    #+#             */
-/*   Updated: 2015/01/14 18:48:53 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2015/01/14 19:24:56 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int		tally_get(int size, int add)
 	return (total);
 }
 
-void	tally_print(void *mem, int size)
+int		tally_print(void *mem, int size)
 {
 	char	*str;
 	int		ret;
@@ -54,6 +54,7 @@ void	tally_print(void *mem, int size)
 			tally_get(1, 1);
 		i++;
 	}
+	return (1);
 }
 
 void	tally_str(char *str)
